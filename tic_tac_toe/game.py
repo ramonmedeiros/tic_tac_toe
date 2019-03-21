@@ -68,29 +68,32 @@ class Game:
         # check for line
         for line in self._board:
 
-            line_set = set(line)
-            if len(line_set) == 1:
-                self._winner = line_set
+            line_set = list(set(line))
+            if len(line_set) == 1 and line_set[0] in self._players:
+                self._winner = line_set[0]
+                logger.debug(f"Line {line} completed by {self._winner}")
                 return True
 
        # check for columns
-        for column in len(self._board[0]):
-            colum_values = set([self._board[line][column] for line in len(self._board)])
+        for column in range(self._size):
+            colum_values = list(set([self._board[line][column] for line in range(self._size)]))
 
-            if len(colum_values) == 1:
-                self._winner = colum_values
+            if len(colum_values) == 1 and colum_values[0] in self._players:
+                self._winner = colum_values[0]
+                logger.debug(f"Column {column} completed by {self._winner}")
                 return True
 
-
         # check for diagonals
-        diagonal_left = set([self._board[index][index] for index in range(len(self._board))])
-        if len(diagonal_left) == 1:
-            self._winner = diagonal_left
+        diagonal_left = list(set([self._board[index][index] for index in range(self._size)]))
+        if len(diagonal_left) == 1 and diagonal_left[0] in self._players:
+            self._winner = diagonal_left[0]
+            logger.debug(f"Left diagonal completed by {self._winner}")
             return True
 
-        diagonal_right = set([a[index][(len(a) - 1) - index] for index in range(len(a))])
-        if len(diagonal_right) == 1:
-            self._winner = diagonal_right
+        diagonal_right = list(set([self._board[index][(self._size - 1) - index] for index in range(self._size)]))
+        if len(diagonal_right) == 1 and diagonal_right[0] in self._players:
+            self._winner = diagonal_right[0]
+            logger.debug(f"Right diagonal completed by {self._winner}")
             return True
 
         return False

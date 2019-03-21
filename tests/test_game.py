@@ -30,3 +30,45 @@ class TestGame(TestCase):
         game = Game()
         game.do_move([line, column], 0)
         assert(game._board[line][column] == 0)
+
+    def test_finish_line(self):
+        game = Game()
+
+        assert(game.is_finished() is False)
+
+        game.do_move([0,0], 0)
+        game.do_move([0,1], 0)
+        game.do_move([0,2], 0)
+        assert(game.is_finished() is True)
+
+    def test_finish_column(self):
+        game = Game()
+
+        assert(game.is_finished() is False)
+
+        game.do_move([0,0], 0)
+        game.do_move([1,0], 0)
+        game.do_move([2,0], 0)
+        assert(game.is_finished() is True)
+
+    def test_finish_left_diagonal(self):
+        game = Game()
+
+        assert(game.is_finished() is False)
+
+        game.do_move([0,0], 0)
+        game.do_move([1,1], 0)
+        game.do_move([2,2], 0)
+        assert(game.is_finished() is True)
+
+    def test_finish_right_diagonal(self):
+        game = Game()
+
+        assert(game.is_finished() is False)
+
+        game.do_move([0,2], 0)
+        game.do_move([1,1], 0)
+        game.do_move([2,0], 0)
+        assert(game.is_finished() is True)
+
+
