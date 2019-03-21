@@ -6,7 +6,7 @@ from logging import INFO, DEBUG, CRITICAL, WARNING
 logger = None
 verbosity = logging.INFO
 
-def get_logger() -> logging.Logger:
+def getLogger() -> logging.Logger:
     global logger
     if logger is None:
         logger = logging.getLogger()

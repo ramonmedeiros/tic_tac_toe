@@ -1,38 +1,42 @@
 import uuid
-import log
+from tic_tac_toe import log
 
 logger = log.getLogger()
 
-LINE_LEN = 3
-COLUMN_LEN = 3
+BOARD_SIZE = 3
 
 class Game:
-    _board = []
     # TODO: when auth will be added, the player id will be recorded
     _players = [None, None]
     game_id = None
     _winner = None
 
-    def __init__(self):
+    def __init__(self, board_size: int=BOARD_SIZE):
         self._game_id = uuid.uuid4().hex
         self._players = [0, 1] 
+        self._size = board_size
+
+        self._gen_board()
 
     def _gen_board(self):
-        for line in len(LINE_LEN):
-            self._board.append([None for column in COLUMN_LEN])
+        logger.debug(f"Board will be {self._size}X{self._size}")
+
+        self._board = []
+        for line in range(self._size):
+            self._board.append([None for column in range(self._size)])
 
     def _validate_position(self, position: list) -> bool:
         # validate params
-        if isinstance(position, list) is False or len(position) == 2:
+        if isinstance(position, list) is False or len(position) != 2:
             raise GameException(f"Position {position} must be a list of two cordinates")
 
-        if isinstance(position[0]) not int or isinstance(position[1]) not int:
+        if isinstance(position[0], int) is False or isinstance(position[1], int) is False:
             raise GameException(f"Position cordinates must be integer value")
 
-        if position[0] > LINE_LEN or position[0] < 1:
+        if position[0] > self._size or position[0] < 0:
             raise GameException("Line must be between 1 and {LINE_LEN}")
 
-        if position[1] > COLUMN_LEN or position[1] < 1:
+        if position[1] > self._size or position[1] < 0:
             raise GameException("Column must be between 1 and {COLUMN_LEN}")
         
         return True
@@ -50,6 +54,7 @@ class Game:
         if self._board[line][column] is not None:
             raise GameException(f"This position is already full with {self._board[line][column]}")
 
+        logger.debug(f"Player {player_id} will move to line {line} column {column}")
         self._board[line][column] = player_id
 
 
@@ -66,12 +71,30 @@ class Game:
             line_set = set(line)
             if len(line_set) == 1:
                 self._winner = line_set
+                return True
 
        # check for columns
         for column in len(self._board[0]):
-            
-            column_set = set(self
-             
+            colum_values = set([self._board[line][column] for line in len(self._board)])
+
+            if len(colum_values) == 1:
+                self._winner = colum_values
+                return True
+
+
+        # check for diagonals
+        diagonal_left = set([self._board[index][index] for index in range(len(self._board))])
+        if len(diagonal_left) == 1:
+            self._winner = diagonal_left
+            return True
+
+        diagonal_right = set([a[index][(len(a) - 1) - index] for index in range(len(a))])
+        if len(diagonal_right) == 1:
+            self._winner = diagonal_right
+            return True
+
+        return False
+
 
 class GameException(Exception):
     pass
