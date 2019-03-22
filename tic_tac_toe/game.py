@@ -5,15 +5,16 @@ logger = log.getLogger()
 
 BOARD_SIZE = 3
 
+
 class Game:
     # TODO: when auth will be added, the player id will be recorded
     _players = [None, None]
     game_id = None
     _winner = None
 
-    def __init__(self, board_size: int=BOARD_SIZE):
+    def __init__(self, board_size: int = BOARD_SIZE):
         self._game_id = uuid.uuid4().hex
-        self._players = [0, 1] 
+        self._players = [0, 1]
         self._size = board_size
 
         self._gen_board()
@@ -28,9 +29,11 @@ class Game:
     def _validate_position(self, position: list) -> bool:
         # validate params
         if isinstance(position, list) is False or len(position) != 2:
-            raise GameException(f"Position {position} must be a list of two cordinates")
+            raise GameException(
+                f"Position {position} must be a list of two cordinates")
 
-        if isinstance(position[0], int) is False or isinstance(position[1], int) is False:
+        if isinstance(position[0], int) is False or isinstance(
+                position[1], int) is False:
             raise GameException(f"Position cordinates must be integer value")
 
         if position[0] > self._size or position[0] < 0:
@@ -38,9 +41,8 @@ class Game:
 
         if position[1] > self._size or position[1] < 0:
             raise GameException("Column must be between 1 and {COLUMN_LEN}")
-        
-        return True
 
+        return True
 
     def do_move(self, position: list, player_id: int) -> bool:
 
@@ -52,11 +54,13 @@ class Game:
 
         line, column = position
         if self._board[line][column] is not None:
-            raise GameException(f"This position is already full with {self._board[line][column]}")
+            raise GameException(
+                f"This position is already full with {self._board[line][column]}"
+            )
 
-        logger.debug(f"Player {player_id} will move to line {line} column {column}")
+        logger.debug(
+            f"Player {player_id} will move to line {line} column {column}")
         self._board[line][column] = player_id
-
 
     def is_finished(self) -> bool:
         """
@@ -74,9 +78,10 @@ class Game:
                 logger.debug(f"Line {line} completed by {self._winner}")
                 return True
 
-       # check for columns
+    # check for columns
         for column in range(self._size):
-            colum_values = list(set([self._board[line][column] for line in range(self._size)]))
+            colum_values = list(
+                set([self._board[line][column] for line in range(self._size)]))
 
             if len(colum_values) == 1 and colum_values[0] in self._players:
                 self._winner = colum_values[0]
@@ -84,13 +89,18 @@ class Game:
                 return True
 
         # check for diagonals
-        diagonal_left = list(set([self._board[index][index] for index in range(self._size)]))
+        diagonal_left = list(
+            set([self._board[index][index] for index in range(self._size)]))
         if len(diagonal_left) == 1 and diagonal_left[0] in self._players:
             self._winner = diagonal_left[0]
             logger.debug(f"Left diagonal completed by {self._winner}")
             return True
 
-        diagonal_right = list(set([self._board[index][(self._size - 1) - index] for index in range(self._size)]))
+        diagonal_right = list(
+            set([
+                self._board[index][(self._size - 1) - index]
+                for index in range(self._size)
+            ]))
         if len(diagonal_right) == 1 and diagonal_right[0] in self._players:
             self._winner = diagonal_right[0]
             logger.debug(f"Right diagonal completed by {self._winner}")
