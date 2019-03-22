@@ -73,4 +73,18 @@ class TestGame(TestCase):
         game = Game()
 
         with self.assertRaises(GameException):
-            self.assertRaises(game.do_move([0, 0], 2))
+            game.do_move([0, 0], 2)
+
+    def test_move_after_finish_game(self):
+        game = Game()
+
+        assert (game.is_finished() is False)
+
+        game.do_move([0, 0], 0)
+        game.do_move([1, 0], 0)
+        game.do_move([2, 0], 0)
+
+        assert (game.is_finished() is True)
+
+        with self.assertRaises(GameException):
+            game.do_move([1, 1], 0)

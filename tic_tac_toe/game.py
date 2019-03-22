@@ -46,6 +46,9 @@ class Game:
 
     def do_move(self, position: list, player_id: int) -> bool:
 
+        if self._winner is not None:
+            raise GameException(f"Game finished. Winner is {self._winner}")
+
         if player_id not in self._players:
             raise GameException(f"Player {player_id} not found")
 
@@ -110,4 +113,6 @@ class Game:
 
 
 class GameException(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+        logger.debug(args)
