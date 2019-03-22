@@ -26,6 +26,12 @@ class Game:
         for line in range(self._size):
             self._board.append([None for column in range(self._size)])
 
+    def get_board(self):
+        return self._board
+
+    def get_winner(self):
+        return self._winner
+
     def _validate_position(self, position: list) -> bool:
         # validate params
         if isinstance(position, list) is False or len(position) != 2:
@@ -44,7 +50,7 @@ class Game:
 
         return True
 
-    def do_move(self, position: list, player_id: int) -> bool:
+    def do_move(self, position: list, player_id: int) -> None:
 
         if self._winner is not None:
             raise GameException(f"Game finished. Winner is {self._winner}")
@@ -65,6 +71,9 @@ class Game:
             f"Player {player_id} will move to line {line} column {column}")
         self._board[line][column] = player_id
 
+        # after doing some action, verify if it's done
+        self.is_finished()
+
     def is_finished(self) -> bool:
         """
         In Tic tac, you can win by:
@@ -81,7 +90,7 @@ class Game:
                 logger.debug(f"Line {line} completed by {self._winner}")
                 return True
 
-    # check for columns
+        # check for columns
         for column in range(self._size):
             colum_values = list(
                 set([self._board[line][column] for line in range(self._size)]))
