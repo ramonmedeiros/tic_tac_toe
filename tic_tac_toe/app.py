@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, request, make_response, jsonify
-from tic_tac_toe.game import Game, APIException
+from tic_tac_toe.game import Game, APIException, LINE, COLUMN, PLAYER
 from tic_tac_toe import log
 from uuid import uuid4
 from wtforms import Form, FieldList, IntegerField, StringField, FormField, validators
@@ -14,11 +14,6 @@ POST = "POST"
 DELETE = "DELETE"
 
 TITLE = "Tic Tac Toe by Ramon Medeiros"
-
-# do move params
-LINE = "line"
-COLUMN = "column"
-PLAYER = "player"
 
 logger = log.getLogger()
 
@@ -41,12 +36,12 @@ def game():
         game = Game()
         game_uuid = uuid4().__str__()
         games[game_uuid] = game
-        return make_response(game_uuid, 201)
+        return game_uuid, 201
 
     elif request.method == GET:
         return jsonify(games.keys())
 
-    return make_response(f"{request.method} not implemented", 405)
+    return f"{request.method} not implemented", 405
 
 
 @app.route("/game/<uuid>", methods=[GET, POST, DELETE])
@@ -57,11 +52,11 @@ def deal_with_game(uuid: str):
     this_game = games.get(uuid)
 
     if this_game is None:
-        return make_response("not found", 404)
+        return "not found", 404
 
     params = DoMoveParameters(request.form)
     if request.method == POST: 
-        if params.validate():
+        if params.validate() is False:
             logger.debug(params.errors)
             return params.errors, 400
 
@@ -77,10 +72,10 @@ def deal_with_game(uuid: str):
     elif request.method == DELETE:
         return games.delete(request.form["uuid"])
 
-    return make_response(f"{request.method} not implemented", 405)
+    return f"{request.method} not implemented", 405
 
 
 class DoMoveParameters(Form):
-    column = IntegerField(COLUMN, [validators.DataRequired()])
-    line =  IntegerField(LINE, [validators.DataRequired()])
-    player = IntegerField(PLAYER, [validators.DataRequired()])
+    column = IntegerField(COLUMN, [validators.InputRequired()])
+    line =  IntegerField(LINE, [validators.InputRequired()])
+    player = IntegerField(PLAYER, [validators.InputRequired()])
