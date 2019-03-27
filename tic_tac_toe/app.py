@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, request, make_response, jsonify
-from tic_tac_toe.game import Game, GameException
+from tic_tac_toe.game import Game, APIException
 from tic_tac_toe import log
 from uuid import uuid4
 from wtforms import Form, FieldList, IntegerField, StringField, FormField, validators
@@ -27,7 +27,7 @@ logger = log.getLogger()
 def hello():
     return TITLE
 
-@app.errorhandler(GameException)
+@app.errorhandler(APIException)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code

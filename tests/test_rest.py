@@ -40,4 +40,10 @@ class TestRest(TestCase):
         move = self.app.post('/game/' + new_game.data.decode(), data={"column": 0, "line": 0, "player": 1})
         assert(move.status_code == 400)
 
+    def test_finishing_game(self):
+        new_game = self.app.post('/game')
+        move = self.app.post('/game/' + new_game.data.decode(), data={"column": 0, "line": 0, "player": 0})
+        move = self.app.post('/game/' + new_game.data.decode(), data={"column": 1, "line": 0, "player": 0})
+        move = self.app.post('/game/' + new_game.data.decode(), data={"column": 2, "line": 0, "player": 0})
+        assert(move.status_code == 218)
 

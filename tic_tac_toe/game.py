@@ -132,7 +132,5 @@ class GameException(APIException):
     status_code = 400
 
 class GameFinished(APIException):
-    status_code = 200
-
-
+    status_code = 218
 
