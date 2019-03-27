@@ -48,9 +48,6 @@ class Game:
 
     def do_move(self, line: int, column: int, player_id: int) -> bool:
 
-        if self._winner is not None:
-            raise GameException(f"Game finished. Winner is {self._winner}")
-
         if player_id not in self._players:
             raise GameException(f"Player {player_id} not found")
 
