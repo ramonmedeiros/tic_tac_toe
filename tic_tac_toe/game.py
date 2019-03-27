@@ -70,7 +70,7 @@ class Game:
 
         return True
 
-    def is_finished(self) -> bool:
+    def is_finished(self):
         """
         In Tic tac, you can win by:
             * completing a line
@@ -83,8 +83,7 @@ class Game:
             line_set = list(set(line))
             if len(line_set) == 1 and line_set[0] in self._players:
                 self._winner = line_set[0]
-                logger.debug(f"Line {line} completed by {self._winner}")
-                return True
+                raise GameFinished(f"Line {line} completed by {self._winner}")
 
         # check for columns
         for column in range(self._size):
@@ -93,16 +92,14 @@ class Game:
 
             if len(colum_values) == 1 and colum_values[0] in self._players:
                 self._winner = colum_values[0]
-                logger.debug(f"Column {column} completed by {self._winner}")
-                return True
+                raise GameFinished(f"Column {column} completed by {self._winner}")
 
         # check for diagonals
         diagonal_left = list(
             set([self._board[index][index] for index in range(self._size)]))
         if len(diagonal_left) == 1 and diagonal_left[0] in self._players:
             self._winner = diagonal_left[0]
-            logger.debug(f"Left diagonal completed by {self._winner}")
-            return True
+            raise GameFinished(f"Left diagonal completed by {self._winner}")
 
         diagonal_right = list(
             set([
@@ -111,13 +108,10 @@ class Game:
             ]))
         if len(diagonal_right) == 1 and diagonal_right[0] in self._players:
             self._winner = diagonal_right[0]
-            logger.debug(f"Right diagonal completed by {self._winner}")
-            return True
-
-        return False
+            raise GameFinished(f"Right diagonal completed by {self._winner}")
 
 
-class GameException(Exception):
+class APIException(Exception):
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):
@@ -132,3 +126,13 @@ class GameException(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
+
+
+class GameException(APIException):
+    status_code = 400
+
+class GameFinished(APIException):
+    status_code = 200
+
+
+
