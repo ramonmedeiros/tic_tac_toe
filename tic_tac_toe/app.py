@@ -22,11 +22,13 @@ logger = log.getLogger()
 def hello():
     return TITLE
 
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
+
 
 @app.route("/game", methods=[GET, POST])
 def game():
@@ -55,14 +57,13 @@ def deal_with_game(uuid: str):
         return "not found", 404
 
     params = DoMoveParameters(request.form)
-    if request.method == POST: 
+    if request.method == POST:
         if params.validate() is False:
             logger.debug(params.errors)
             return params.errors, 400
 
-        if this_game.do_move(params.column.data,
-                                 params.line.data,
-                                 params.player.data) is True:
+        if this_game.do_move(params.column.data, params.line.data,
+                             params.player.data) is True:
             return "moved", 200
         return "failed", 403
 
@@ -77,5 +78,5 @@ def deal_with_game(uuid: str):
 
 class DoMoveParameters(Form):
     column = IntegerField(COLUMN, [validators.InputRequired()])
-    line =  IntegerField(LINE, [validators.InputRequired()])
+    line = IntegerField(LINE, [validators.InputRequired()])
     player = IntegerField(PLAYER, [validators.InputRequired()])

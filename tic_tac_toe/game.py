@@ -11,7 +11,6 @@ PLAYER = "player"
 
 
 class Game:
-
     def __init__(self):
         self._game_id = uuid.uuid4().hex
         self._players = [0, 1]
@@ -41,8 +40,7 @@ class Game:
 
     def _validate_position(self, line: int, column: int):
 
-        if isinstance(column, int) is False or isinstance(
-                line, int) is False:
+        if isinstance(column, int) is False or isinstance(line, int) is False:
             raise GameException(f"Position cordinates must be integer value")
 
         if line > BOARD_SIZE or line < 0:
@@ -51,25 +49,23 @@ class Game:
         if column > BOARD_SIZE or column < 0:
             raise GameException("Column must be between 1 and {COLUMN_LEN}")
 
-
     def _register_move(self, line: int, column: int, player_id: int) -> bool:
         self._validate_position(line, column)
-        
+
         board = self.get_board()
 
         # check if place is empty
         if board[line][column] is not None:
             raise GameException(
-                f"This position is already full with {board[line][column]}"
-            )
+                f"This position is already full with {board[line][column]}")
 
         # check if its players turn
         if len(self._moves) > 0 and self._moves[-1][PLAYER] == player_id:
             raise GameException("You did the last move, wait for other player")
 
-        logger.debug(f"{self._game_id} -> board[{line}][{column}] = {player_id}")
+        logger.debug(
+            f"{self._game_id} -> board[{line}][{column}] = {player_id}")
         self._moves.append({PLAYER: player_id, COLUMN: column, LINE: line})
-
 
     def do_move(self, line: int, column: int, player_id: int) -> bool:
 
@@ -111,7 +107,8 @@ class Game:
 
             if len(colum_values) == 1 and colum_values[0] in self._players:
                 self._winner = colum_values[0]
-                raise GameFinished(f"Column {column} completed by {self._winner}")
+                raise GameFinished(
+                    f"Column {column} completed by {self._winner}")
 
         # check for diagonals
         diagonal_left = list(
@@ -150,6 +147,6 @@ class APIException(Exception):
 class GameException(APIException):
     status_code = 400
 
+
 class GameFinished(APIException):
     status_code = 218
-
