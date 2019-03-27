@@ -32,5 +32,12 @@ class TestRest(TestCase):
         assert(move.status_code == 200)
 
         board = self.app.get('/game/' + new_game.data.decode())
-        logger.debug(board.data.decode())
-        
+        assert(board.get_json()[0][0] == 0)
+
+    def test_do_move_previous_filled(self):
+        new_game = self.app.post('/game')
+        move = self.app.post('/game/' + new_game.data.decode(), data={"column": 0, "line": 0, "player": 0})
+        move = self.app.post('/game/' + new_game.data.decode(), data={"column": 0, "line": 0, "player": 1})
+        assert(move.status_code == 400)
+
+
