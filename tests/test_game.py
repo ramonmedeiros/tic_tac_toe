@@ -72,3 +72,8 @@ class TestGame(TestCase):
 
         with self.assertRaises(GameException):
             self.game.do_move(1, 1, 0)
+
+    def test_try_do_two_moves_same_player(self):
+        self.game.do_move(0,0,0)
+        with self.assertRaises(GameException):
+            self.game.do_move(1,0,0)
