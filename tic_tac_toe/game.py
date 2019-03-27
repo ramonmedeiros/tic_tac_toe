@@ -24,6 +24,9 @@ class Game:
 
         return board
 
+    def __str__(self):
+        return self._game_id
+
     def get_board(self):
         board = self._gen_board()
 

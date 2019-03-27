@@ -41,7 +41,7 @@ def game():
         return game_uuid, 201
 
     elif request.method == GET:
-        return jsonify(games.keys())
+        return jsonify(games)
 
     return f"{request.method} not implemented", 405
 
