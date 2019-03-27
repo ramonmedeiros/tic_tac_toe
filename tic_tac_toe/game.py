@@ -32,25 +32,21 @@ class Game:
     def get_winner(self):
         return self._winner
 
-    def _validate_position(self, position: list) -> bool:
-        # validate params
-        if isinstance(position, list) is False or len(position) != 2:
-            raise GameException(
-                f"Position {position} must be a list of two cordinates")
+    def _validate_position(self, line: int, column: int) -> bool:
 
-        if isinstance(position[0], int) is False or isinstance(
-                position[1], int) is False:
+        if isinstance(column, int) is False or isinstance(
+                line, int) is False:
             raise GameException(f"Position cordinates must be integer value")
 
-        if position[0] > self._size or position[0] < 0:
+        if line > self._size or line < 0:
             raise GameException("Line must be between 1 and {LINE_LEN}")
 
-        if position[1] > self._size or position[1] < 0:
+        if column > self._size or column < 0:
             raise GameException("Column must be between 1 and {COLUMN_LEN}")
 
         return True
 
-    def do_move(self, position: list, player_id: int) -> None:
+    def do_move(self, line: int, column: int, player_id: int) -> bool:
 
         if self._winner is not None:
             raise GameException(f"Game finished. Winner is {self._winner}")
@@ -59,20 +55,20 @@ class Game:
             raise GameException(f"Player {player_id} not found")
 
         # this will throw exception in case of failure
-        self._validate_position(position)
+        self._validate_position(line, column)
 
-        line, column = position
         if self._board[line][column] is not None:
             raise GameException(
                 f"This position is already full with {self._board[line][column]}"
             )
 
-        logger.debug(
-            f"Player {player_id} will move to line {line} column {column}")
+        logger.debug(f"{self._game_id} -> board[{line}][{column}] = {player_id}")
         self._board[line][column] = player_id
 
         # after doing some action, verify if it's done
         self.is_finished()
+
+        return True
 
     def is_finished(self) -> bool:
         """
