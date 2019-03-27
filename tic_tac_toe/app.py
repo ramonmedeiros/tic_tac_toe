@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from tic_tac_toe.game import Game
 from tic_tac_toe import log
 from uuid import uuid4
@@ -23,10 +23,6 @@ PLAYER = "player"
 logger = log.getLogger()
 
 
-def pretty_print(data: dict) -> str:
-    return json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-
-
 @app.route("/")
 def hello():
     return TITLE
@@ -43,7 +39,7 @@ def game():
         return make_response(game_uuid, 201)
 
     elif request.method == GET:
-        return pretty_print(games.keys())
+        return jsonify(games.keys())
 
     return make_response(f"{request.method} not implemented", 405)
 
@@ -71,7 +67,7 @@ def deal_with_game(uuid: str):
         return "failed", 403
 
     if request.method == GET:
-        return pretty_print(games.get(uuid).get_board())
+        return jsonify(games.get(uuid).get_board())
 
     elif request.method == DELETE:
         return games.delete(request.form["uuid"])
