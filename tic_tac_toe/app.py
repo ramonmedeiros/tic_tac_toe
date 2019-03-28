@@ -12,16 +12,18 @@ games = {}
 GET = "GET"
 POST = "POST"
 DELETE = "DELETE"
-
 TITLE = "Tic Tac Toe by Ramon Medeiros"
 
 logger = log.getLogger()
+log.set_verbosity(log.DEBUG)
 
-
-@app.route("/")
-def hello():
-    return TITLE
-
+@app.after_request
+def apply_caching(response):
+    """
+    Apply this header to allow requests from the same source
+    """
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -29,6 +31,9 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
+@app.route("/")
+def hello():
+    return TITLE
 
 @app.route("/game", methods=[GET, POST])
 def game():
@@ -41,7 +46,7 @@ def game():
         return game_uuid, 201
 
     elif request.method == GET:
-        return jsonify(games)
+        return jsonify(list(games.keys()))
 
     return f"{request.method} not implemented", 405
 
@@ -58,9 +63,11 @@ def deal_with_game(uuid: str):
 
     params = DoMoveParameters(request.form)
     if request.method == POST:
+        logger.debug(request.form)
+        logger.debug(params.data)
         if params.validate() is False:
             logger.debug(params.errors)
-            return params.errors, 400
+            return "invalid params", 400
 
         if this_game.do_move(params.column.data, params.line.data,
                              params.player.data) is True:

@@ -12,7 +12,11 @@ run:
 container:
 	docker stop backend || true
 	docker build . -t $(TAG)
-	docker run --name backend --rm -d $(TAG)
+	docker run -p 5000:5000 --name backend --rm -d $(TAG)
+
+
+run-fronted:
+	PYTHONPATH=. FLASK_APP=frontend/server.py FLASK_ENV=development flask run  --port=8080
 
 default: format-files
 

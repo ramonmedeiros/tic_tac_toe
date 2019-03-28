@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block header %}
+  <h1>Games</h1>
+{% endblock %}
+
+{% block content %}
+    <div id="listGames"></div>
+    <script>window.listGames();</script>
+    <input id="newGame" type="button" value="New Game" onclick="startNewGame();" />
+{% endblock %}
