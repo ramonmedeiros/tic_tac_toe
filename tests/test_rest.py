@@ -97,3 +97,19 @@ class TestRest(TestCase):
                 "player": O
             })
         assert (move.status_code == 218)
+
+    def test_do_move_column(self):
+        new_game = self.app.post('/game')
+        move = self.app.post(
+            '/game/' + new_game.data.decode(),
+            data={
+                "column": 1,
+                "line": 0,
+                "player": O
+            })
+        assert (move.status_code == 200)
+
+        board = self.app.get('/game/' + new_game.data.decode())
+        assert (board.get_json()[0][1] == O)
+
+
