@@ -75,7 +75,8 @@ def deal_with_game(uuid: str):
         return "failed", 403
 
     if request.method == GET:
-        return jsonify(games.get(uuid).get_board())
+        return jsonify({"board": games.get(uuid).get_board(),
+                        "winner": games.get(uuid).get_winner()})
 
     elif request.method == DELETE:
         return games.delete(request.form["uuid"])

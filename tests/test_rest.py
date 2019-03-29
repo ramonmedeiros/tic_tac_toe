@@ -39,7 +39,7 @@ class TestRest(TestCase):
         assert (move.status_code == 200)
 
         board = self.app.get('/game/' + new_game.data.decode())
-        assert (board.get_json()[0][0] == O)
+        assert (board.get_json()["board"][0][0] == O)
 
     def test_do_move_previous_filled(self):
         new_game = self.app.post('/game')
@@ -110,6 +110,6 @@ class TestRest(TestCase):
         assert (move.status_code == 200)
 
         board = self.app.get('/game/' + new_game.data.decode())
-        assert (board.get_json()[0][1] == O)
+        assert (board.get_json()["board"][0][1] == O)
 
 

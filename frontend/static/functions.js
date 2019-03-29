@@ -58,7 +58,9 @@ function fillBoard() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-        board = JSON.parse(this.responseText);
+        response = JSON.parse(this.responseText);
+        board = response["board"];
+        winner = response["winner"];
         for (line = 0; line < board.length; line++) {
             for (column = 0; column < board[line].length; column++) {
                 if (board[line][column] != null) {
@@ -68,9 +70,25 @@ function fillBoard() {
                 }
             }
         }
+        if (winner != null) {
+            setWinner(winner);
         }
-    };
+    }};
     xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid, true);
     xhttp.send();
 }
 
+function setWinner(player) {
+    var inputs = document.getElementsByTagName("input")
+    for (index in inputs) {
+        inputs[index].disabled = true;
+    }
+
+    flash = document.getElementById("flash");
+    h1 = document.createElement("h1");
+    h1.textContent = "Player " + player + " won the game"
+    flash.appendChild(h1);
+
+    // set winner message
+    window.clearInterval(main_interval);
+}
