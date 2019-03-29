@@ -1,5 +1,6 @@
 from unittest import TestCase
 from tic_tac_toe import app, log
+from tic_tac_toe.game import X, O
 
 logger = log.getLogger()
 log.set_verbosity(log.DEBUG)
@@ -33,12 +34,12 @@ class TestRest(TestCase):
             data={
                 "column": 0,
                 "line": 0,
-                "player": 0
+                "player": O
             })
         assert (move.status_code == 200)
 
         board = self.app.get('/game/' + new_game.data.decode())
-        assert (board.get_json()[0][0] == 0)
+        assert (board.get_json()[0][0] == O)
 
     def test_do_move_previous_filled(self):
         new_game = self.app.post('/game')
@@ -47,14 +48,14 @@ class TestRest(TestCase):
             data={
                 "column": 0,
                 "line": 0,
-                "player": 0
+                "player": O
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
             data={
                 "column": 0,
                 "line": 0,
-                "player": 1
+                "player": X
             })
         assert (move.status_code == 400)
 
@@ -65,34 +66,34 @@ class TestRest(TestCase):
             data={
                 "column": 0,
                 "line": 0,
-                "player": 0
+                "player": O
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
             data={
                 "column": 1,
                 "line": 1,
-                "player": 1
+                "player": X
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
             data={
                 "column": 1,
                 "line": 0,
-                "player": 0
+                "player": O
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
             data={
                 "column": 2,
                 "line": 1,
-                "player": 1
+                "player": X
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
             data={
                 "column": 2,
                 "line": 0,
-                "player": 0
+                "player": O
             })
         assert (move.status_code == 218)

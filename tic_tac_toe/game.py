@@ -8,12 +8,13 @@ BOARD_SIZE = 3
 LINE = "line"
 COLUMN = "column"
 PLAYER = "player"
-
+O = 'O'
+X = 'X'
 
 class Game:
     def __init__(self):
         self._game_id = uuid.uuid4().hex
-        self._players = [0, 1]
+        self._players = [X, O]
         self._winner = None
         self._moves = []
 
@@ -52,7 +53,7 @@ class Game:
         if column > BOARD_SIZE or column < 0:
             raise GameException("Column must be between 1 and {COLUMN_LEN}")
 
-    def _register_move(self, line: int, column: int, player_id: int) -> bool:
+    def _register_move(self, line: int, column: int, player_id: str) -> bool:
         self._validate_position(line, column)
 
         board = self.get_board()
@@ -70,13 +71,17 @@ class Game:
             f"{self._game_id} -> board[{line}][{column}] = {player_id}")
         self._moves.append({PLAYER: player_id, COLUMN: column, LINE: line})
 
-    def do_move(self, line: int, column: int, player_id: int) -> bool:
+    def do_move(self, line: int, column: int, player_id: str) -> bool:
+
 
         if self._winner is not None:
             raise GameException("Game is already finished, can't move")
 
         if player_id not in self._players:
             raise GameException(f"Player {player_id} not found")
+
+        # force player to uppercase
+        player_id = player_id.upper()
 
         # this will throw exception in case of failure
         self._register_move(line, column, player_id)

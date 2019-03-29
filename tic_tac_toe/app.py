@@ -86,4 +86,4 @@ def deal_with_game(uuid: str):
 class DoMoveParameters(Form):
     column = IntegerField(COLUMN, [validators.InputRequired()])
     line = IntegerField(LINE, [validators.InputRequired()])
-    player = IntegerField(PLAYER, [validators.InputRequired()])
+    player = StringField(PLAYER, [validators.InputRequired()])
