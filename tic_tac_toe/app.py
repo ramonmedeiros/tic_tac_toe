@@ -69,7 +69,7 @@ def deal_with_game(uuid: str):
             logger.debug(params.errors)
             return "invalid params", 400
 
-        if this_game.do_move(params.column.data, params.line.data,
+        if this_game.do_move(params.line.data, params.column.data,
                              params.player.data) is True:
             return "moved", 200
         return "failed", 403
