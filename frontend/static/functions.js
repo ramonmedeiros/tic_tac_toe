@@ -53,3 +53,24 @@ function doMove(id) {
     xhttp.send(JSON.stringify({"player": player, "line": line, "column": column}));
 }
 
+function fillBoard() {
+    var uuid = location.pathname.split("/").pop();
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        board = JSON.parse(this.responseText);
+        for (line = 0; line < board.length; line++) {
+            for (column = 0; column < board[line].length; column++) {
+                if (board[line][column] != null) {
+                    field = document.getElementById("p" + line + column);
+                    field.value = board[line][column];
+                    field.disabled = true;
+                }
+            }
+        }
+        }
+    };
+    xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid, true);
+    xhttp.send();
+}
+
