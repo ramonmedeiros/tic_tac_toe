@@ -76,3 +76,13 @@ class TestGame(TestCase):
         self.game.do_move(0, 0, O)
         with self.assertRaises(GameException):
             self.game.do_move(1, 0, O)
+
+    def test_players(self):
+        assert(self.game.get_available_players() == ["X", "O"])
+        
+        self.game._players["X"] = "ahsdhsadsahd"
+        assert(self.game.get_available_players() == ["O"])
+
+        
+        self.game._players["O"] = "ahsdhsadsahd"
+        assert(self.game.get_available_players() == [])

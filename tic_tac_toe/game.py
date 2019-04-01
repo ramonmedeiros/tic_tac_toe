@@ -15,7 +15,7 @@ X = 'X'
 class Game:
     def __init__(self):
         self._game_id = uuid.uuid4().hex
-        self._players = [X, O]
+        self._players = {X: None, O: None}
         self._winner = None
         self._moves = []
 
@@ -42,6 +42,9 @@ class Game:
 
     def get_winner(self):
         return self._winner
+
+    def get_available_players(self):
+        return [player for player,token in self._players.items() if token is None]
 
     def _validate_position(self, line: int, column: int):
 
@@ -77,7 +80,7 @@ class Game:
         if self._winner is not None:
             raise GameException("Game is already finished, can't move")
 
-        if player_id not in self._players:
+        if player_id not in self._players.keys():
             raise GameException(f"Player {player_id} not found")
 
         # force player to uppercase
@@ -104,7 +107,7 @@ class Game:
         for line in board:
 
             line_set = list(set(line))
-            if len(line_set) == 1 and line_set[0] in self._players:
+            if len(line_set) == 1 and line_set[0] in self._players.keys():
                 self._winner = line_set[0]
                 raise GameFinished(f"Line {line} completed by {self._winner}")
 
@@ -113,7 +116,7 @@ class Game:
             colum_values = list(
                 set([board[line][column] for line in range(BOARD_SIZE)]))
 
-            if len(colum_values) == 1 and colum_values[0] in self._players:
+            if len(colum_values) == 1 and colum_values[0] in self._players.keys():
                 self._winner = colum_values[0]
                 raise GameFinished(
                     f"Column {column} completed by {self._winner}")
@@ -121,7 +124,7 @@ class Game:
         # check for diagonals
         diagonal_left = list(
             set([board[index][index] for index in range(BOARD_SIZE)]))
-        if len(diagonal_left) == 1 and diagonal_left[0] in self._players:
+        if len(diagonal_left) == 1 and diagonal_left[0] in self._players.keys():
             self._winner = diagonal_left[0]
             raise GameFinished(f"Left diagonal completed by {self._winner}")
 
@@ -130,7 +133,7 @@ class Game:
                 board[index][(BOARD_SIZE - 1) - index]
                 for index in range(BOARD_SIZE)
             ]))
-        if len(diagonal_right) == 1 and diagonal_right[0] in self._players:
+        if len(diagonal_right) == 1 and diagonal_right[0] in self._players.keys():
             self._winner = diagonal_right[0]
             raise GameFinished(f"Right diagonal completed by {self._winner}")
 

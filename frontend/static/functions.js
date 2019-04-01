@@ -55,14 +55,25 @@ function isFinished(uuid){
     xhttp.send();
 }
 
+function getSelection(){
+    radios = document.getElementsByName("player");
+
+    for (i = 0; i< radios.length; i++) {
+        if (radios[i].checked == true) {
+            selected = radios[i];
+            return selected;
+        }
+    }
+
+}
+
 function doMove(id) {
     var uuid = location.pathname.split("/").pop();
     var move = {};
-
-    var board_move = document.getElementById(id)
+    var button_move = document.getElementById(id)
 
     // catch moves
-    move.player = board_move.value.toUpperCase();
+    move.player = getSelection().id.toUpperCase();
     move.line = parseInt(id[1]);
     move.column = parseInt(id[2]);
 
@@ -73,7 +84,6 @@ function doMove(id) {
         }
     if (this.readyState == 4 && this.status == 400) {
         error = JSON.parse(this.responseText);
-        board_move.value = "";
         document.getElementById("error").textContent = error['message'];
         setTimeout('document.getElementById("error").textContent = ""', 5000)
         }
