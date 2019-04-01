@@ -49,7 +49,12 @@ function doMove(id) {
     if (this.readyState == 4 && this.status == 200) {
         document.getElementById(id).disabled = true;
         }
+    if (this.readyState == 4 && this.status == 400) {
+        error = JSON.parse(this.responseText);
+        document.getElementById("error").textContent = error['message'];
+        }
     };
+
     xhttp.open("POST", BACKEND_GAME_URL + "/" + uuid, true);
     xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
     xhttp.send(JSON.stringify(move));
