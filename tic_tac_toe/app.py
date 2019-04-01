@@ -19,14 +19,6 @@ TITLE = "Tic Tac Toe by Ramon Medeiros"
 logger = log.getLogger()
 log.set_verbosity(log.DEBUG)
 
-@app.after_request
-def apply_caching(response):
-    """
-    Apply this header to allow requests from the same source
-    """
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    return response
-
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
