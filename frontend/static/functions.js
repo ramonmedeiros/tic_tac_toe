@@ -23,10 +23,13 @@ function listGames() {
 
             // iterate over games and generate list with link to each one
             for (i = 0; i < game_list.length; i++) {
+                uuid = game_list[i];
                 var p = document.createElement("pre");
-                p.textContent = game_list[i];
+                p.textContent = uuid;
+                p.id = uuid;
+                isFinished(uuid);
                 var a = document.createElement("a");
-                a.href = location.href + "game/" + game_list[i];
+                a.href = location.href + "game/" + uuid;
                 a.appendChild(p)
                 main_div.appendChild(a);
             }
@@ -35,6 +38,21 @@ function listGames() {
     xhttp.open("GET", BACKEND_GAME_URL, true);
     xhttp.send();
 
+}
+
+function isFinished(uuid){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        game = JSON.parse(this.responseText);
+        if (game['winner'] != null) {
+            var link = document.getElementById(uuid);
+            link.textContent = link.textContent + " [FINISHED]";
+        }
+            
+    }};
+    xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid, true);
+    xhttp.send();
 }
 
 function doMove(id) {
