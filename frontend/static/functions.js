@@ -50,7 +50,7 @@ function doMove(id) {
         }
     };
     xhttp.open("POST", BACKEND_GAME_URL + "/" + uuid, true);
-    xhttp.send(JSON.stringify({"player": player, "line": line, "column": column}));
+    xhttp.send("player=" + player + "&line=" + line + "&column=" column);
 }
 
 function fillBoard() {
