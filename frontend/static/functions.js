@@ -39,9 +39,10 @@ function listGames() {
 
 function doMove(id) {
     var uuid = location.pathname.split("/").pop();
-    var player = document.getElementById(id).value;
-    var line = id[1];
-    var column = id[2];
+    var move = {};
+    move.player = document.getElementById(id).value;
+    move.line = parseInt(id[1]);
+    move.column = parseInt(id[2]);
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -50,8 +51,10 @@ function doMove(id) {
         }
     };
     xhttp.open("POST", BACKEND_GAME_URL + "/" + uuid, true);
-    xhttp.send("player=" + player + "&line=" + line + "&column=" column);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+    xhttp.send(JSON.stringify(move));
 }
+
 
 function fillBoard() {
     var uuid = location.pathname.split("/").pop();
