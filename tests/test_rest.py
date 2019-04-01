@@ -111,5 +111,3 @@ class TestRest(TestCase):
 
         board = self.app.get('/game/' + new_game.data.decode())
         assert (board.get_json()["board"][0][1] == O)
-
-

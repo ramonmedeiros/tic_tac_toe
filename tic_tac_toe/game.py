@@ -11,6 +11,7 @@ PLAYER = "player"
 O = 'O'
 X = 'X'
 
+
 class Game:
     def __init__(self):
         self._game_id = uuid.uuid4().hex
@@ -72,7 +73,6 @@ class Game:
         self._moves.append({PLAYER: player_id, COLUMN: column, LINE: line})
 
     def do_move(self, line: int, column: int, player_id: str) -> bool:
-
 
         if self._winner is not None:
             raise GameException("Game is already finished, can't move")

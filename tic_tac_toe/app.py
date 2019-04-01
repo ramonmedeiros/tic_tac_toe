@@ -19,15 +19,18 @@ TITLE = "Tic Tac Toe by Ramon Medeiros"
 logger = log.getLogger()
 log.set_verbosity(log.DEBUG)
 
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
 
+
 @app.route("/")
 def hello():
     return TITLE
+
 
 @app.route("/game", methods=[GET, POST])
 def game():
@@ -68,8 +71,10 @@ def deal_with_game(uuid: str):
         return "failed", 403
 
     if request.method == GET:
-        return jsonify({"board": games.get(uuid).get_board(),
-                        "winner": games.get(uuid).get_winner()})
+        return jsonify({
+            "board": games.get(uuid).get_board(),
+            "winner": games.get(uuid).get_winner()
+        })
 
     elif request.method == DELETE:
         return games.delete(request.form["uuid"])
