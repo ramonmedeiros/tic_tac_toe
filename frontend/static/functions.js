@@ -62,7 +62,7 @@ function doMove(id) {
     var board_move = document.getElementById(id)
 
     // catch moves
-    move.player = board_move.value;
+    move.player = board_move.value.toUpperCase();
     move.line = parseInt(id[1]);
     move.column = parseInt(id[2]);
 
