@@ -40,7 +40,11 @@ function listGames() {
 function doMove(id) {
     var uuid = location.pathname.split("/").pop();
     var move = {};
-    move.player = document.getElementById(id).value;
+
+    var board_move = document.getElementById(id)
+
+    // catch moves
+    move.player = board_move.value;
     move.line = parseInt(id[1]);
     move.column = parseInt(id[2]);
 
@@ -51,7 +55,9 @@ function doMove(id) {
         }
     if (this.readyState == 4 && this.status == 400) {
         error = JSON.parse(this.responseText);
+        board_move.value = "";
         document.getElementById("error").textContent = error['message'];
+        setTimeout('document.getElementById("error").textContent = ""', 5000)
         }
     };
 
