@@ -61,14 +61,15 @@ def deal_with_game(uuid: str):
     if this_game is None:
         return "not found", 404
 
-    params = DoMoveParameters(request.form)
     if request.method == POST:
-        if params.validate() is False:
-            logger.debug(params.errors)
-            return "invalid params", 400
 
-        if this_game.do_move(params.line.data, params.column.data,
-                             params.player.data) is True:
+        if validate_request_json(request) is not True:
+            return "invalid params", 404
+
+        rjson = request.json
+
+        if this_game.do_move(rjson[LINE], rjson[COLUMN],
+                             rjson[PLAYER]) is True:
             return "moved", 200
         return "failed", 403
 
@@ -82,7 +83,18 @@ def deal_with_game(uuid: str):
     return f"{request.method} not implemented", 405
 
 
-class DoMoveParameters(Form):
-    column = IntegerField(COLUMN, [validators.InputRequired()])
-    line = IntegerField(LINE, [validators.InputRequired()])
-    player = StringField(PLAYER, [validators.InputRequired()])
+def validate_request_json(request):
+    if request.is_json is False:
+        return False
+
+    rjson = request.json
+    if list(rjson.keys()) != [COLUMN, LINE, PLAYER]:
+        return False
+
+    if isinstance(rjson[LINE], int) is False:
+        raise GameException("Line must be int")
+
+    if isinstance(rjson[COLUMN], int) is False:
+        raise GameException("Column must be int")
+
+    return True

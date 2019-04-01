@@ -31,7 +31,7 @@ class TestRest(TestCase):
         new_game = self.app.post('/game')
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 0,
                 "line": 0,
                 "player": O
@@ -45,14 +45,14 @@ class TestRest(TestCase):
         new_game = self.app.post('/game')
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 0,
                 "line": 0,
                 "player": O
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 0,
                 "line": 0,
                 "player": X
@@ -63,35 +63,35 @@ class TestRest(TestCase):
         new_game = self.app.post('/game')
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 0,
                 "line": 0,
                 "player": O
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 1,
                 "line": 1,
                 "player": X
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 1,
                 "line": 0,
                 "player": O
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 2,
                 "line": 1,
                 "player": X
             })
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 2,
                 "line": 0,
                 "player": O
@@ -102,7 +102,7 @@ class TestRest(TestCase):
         new_game = self.app.post('/game')
         move = self.app.post(
             '/game/' + new_game.data.decode(),
-            data={
+            json={
                 "column": 1,
                 "line": 0,
                 "player": O
