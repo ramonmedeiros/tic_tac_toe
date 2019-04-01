@@ -58,7 +58,7 @@ def deal_with_game(uuid: str):
     if request.method == POST:
 
         if validate_request_json(request) is not True:
-            return "invalid params", 404
+            return "invalid params", 406
 
         rjson = request.json
 
@@ -82,7 +82,7 @@ def validate_request_json(request):
         return False
 
     rjson = request.json
-    if list(rjson.keys()) != [COLUMN, LINE, PLAYER]:
+    if list(rjson.keys()).sort() != [COLUMN, LINE, PLAYER].sort():
         return False
 
     if isinstance(rjson[LINE], int) is False:
