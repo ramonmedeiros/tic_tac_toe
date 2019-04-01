@@ -63,8 +63,6 @@ def deal_with_game(uuid: str):
 
     params = DoMoveParameters(request.form)
     if request.method == POST:
-        logger.debug(request.form)
-        logger.debug(params.data)
         if params.validate() is False:
             logger.debug(params.errors)
             return "invalid params", 400
