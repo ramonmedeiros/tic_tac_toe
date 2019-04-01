@@ -5,7 +5,6 @@ from flask_cors import CORS
 from tic_tac_toe.game import Game, APIException, LINE, COLUMN, PLAYER
 from tic_tac_toe import log
 from uuid import uuid4
-from wtforms import Form, FieldList, IntegerField, StringField, FormField, validators
 
 app = Flask("tic-tac-toe")
 CORS(app)
