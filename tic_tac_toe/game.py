@@ -8,6 +8,7 @@ BOARD_SIZE = 3
 LINE = "line"
 COLUMN = "column"
 PLAYER = "player"
+TOKEN = "token"
 O = 'O'
 X = 'X'
 
@@ -46,6 +47,12 @@ class Game:
     def get_available_players(self):
         return [player for player,token in self._players.items() if token is None]
 
+    def _get_player_by_token(self, token):
+        for player,tk in self._players.items():
+            if token == tk:
+                return player
+        raise GameException("Player not found")
+
     def _validate_position(self, line: int, column: int):
 
         if isinstance(column, int) is False or isinstance(line, int) is False:
@@ -75,7 +82,8 @@ class Game:
             f"{self._game_id} -> board[{line}][{column}] = {player_id}")
         self._moves.append({PLAYER: player_id, COLUMN: column, LINE: line})
 
-    def do_move(self, line: int, column: int, player_id: str) -> bool:
+    def do_move(self, line: int, column: int, token: str) -> bool:
+        player_id = self._get_player_by_token(token)
 
         if self._winner is not None:
             raise GameException("Game is already finished, can't move")
