@@ -6,6 +6,10 @@
 <script src="{{ url_for('static', filename='functions.js') }}"></script>
 <section class="content">
   <header>
+    <div style="position: absolute;top: 8px; right: 16px;">
+        <h3 id="login" style="display:inline"></h3><a id="link"><h3 id="message_link" style="display:inline"></h3> </a>
+        <script>loginBallon();</script>
+    </div>
     {% block header %}{% endblock %}
   </header>
   {% block content %}{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block header %}
+  <h1>Login</h1>
+{% endblock %}
+
+{% block content %}
+<h3>Username:</h3>
+<input id="username" type="text" >
+<input id="login" type="button" value="Login" onclick="login(document.getElementById('username').value);"/>
+{% endblock %}

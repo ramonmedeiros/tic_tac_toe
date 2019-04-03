@@ -10,6 +10,10 @@ GET = "GET"
 def index():
     return render_template("games.html")
 
+@app.route("/login", methods=[GET])
+def login():
+    return render_template("login.html")
+
 @app.route("/game/<uuid>", methods=[GET])
 def play_game(uuid):
     if requests.get(f"{get_backend_uri()}/game/{uuid}").status_code != 200:

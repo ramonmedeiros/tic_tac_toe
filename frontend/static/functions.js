@@ -1,5 +1,6 @@
+var BACKEND_LOGIN = "http://localhost:5000/login"
 var BACKEND_GAME_URL = "http://localhost:5000/game"
-
+var BACKEND_LOGOUT = "http://localhost:5000/logout"
 
 function startNewGame() {
     var xhttp = new XMLHttpRequest();
@@ -10,6 +11,7 @@ function startNewGame() {
         }
     };
     xhttp.open("POST", BACKEND_GAME_URL, true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
     xhttp.send();
 }
 
@@ -133,4 +135,45 @@ function setWinner(player) {
 
     // set winner message
     window.clearInterval(main_interval);
+}
+
+function login(user) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        token = JSON.parse(this.responseText)["token"];
+        localStorage.setItem("tic_tac_auth", JSON.stringify({"token": token, "user": user}));
+        window.location.replace(window.location.origin);
+    }};
+    xhttp.open("POST", BACKEND_LOGIN, true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+    xhttp.send(JSON.stringify({"username": user}));
+}
+
+function logout() {
+    user = JSON.parse(localStorage.getItem("tic_tac_auth"))["user"]
+    token = JSON.parse(localStorage.getItem("tic_tac_auth"))["token"]
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        localStorage.removeItem("tic_tac_auth");
+        window.location.reload();
+    }};
+    xhttp.open("POST", BACKEND_LOGOUT, true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+    xhttp.send(JSON.stringify({"username": user, "token": token}));
+}
+
+
+function loginBallon() {
+    if (localStorage.getItem("tic_tac_auth") == null) {
+        document.getElementById("login").textContent = "You are not logged in. Please ";
+        document.getElementById("message_link").textContent = "login"
+        document.getElementById("link").href = window.location.origin+ "/login";
+    } else {
+        user = JSON.parse(localStorage.getItem("tic_tac_auth"))["user"];
+        document.getElementById("login").textContent = "You are logged as " + user + ". ";
+        document.getElementById("message_link").textContent = "Logout";
+        document.getElementById("link").href = "javascript:logout()";
+    }
 }
