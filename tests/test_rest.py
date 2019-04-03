@@ -39,6 +39,9 @@ class TestRest(TestCase):
         rv = self.app.get('/')
         assert (rv.data.decode() == app.TITLE)
 
+    def test_get_player_by_token(self):
+        assert(self.app.get(f'/game/{self.uuid}/player', json={TOKEN: self.x_token}).get_json()[PLAYER] == X)
+
     def test_get_new_game(self):
         rv = self.app.get('/game/' + self.uuid)
         assert (rv.status_code == 200)

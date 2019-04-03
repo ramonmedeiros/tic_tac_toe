@@ -116,7 +116,7 @@ def deal_with_game(uuid: str):
 
     return f"{request.method} not implemented", 405
 
-@app.route("/game/<uuid>/player", methods=[POST])
+@app.route("/game/<uuid>/player", methods=[POST, GET])
 def register_player(uuid: str):
     global users
 
@@ -128,20 +128,39 @@ def register_player(uuid: str):
 
     rjson = request.json
 
-    if validate_params(rjson, [PLAYER, TOKEN]) is False:
-        return "expected player and token", 404
+    if request.method == POST:
 
-    player = rjson[PLAYER]
-    token = rjson[TOKEN]
+        if validate_params(rjson, [PLAYER, TOKEN]) is False:
+            return "expected player and token", 404
 
-    if users.get(token) is None:
-        return "not valid token", 401
+        player = rjson[PLAYER]
+        token = rjson[TOKEN]
 
-    if player not in games[uuid].get_available_players():
-        return f"Player {player} its already being used", 400
+        if users.get(token) is None:
+            return "not valid token", 401
 
-    games[uuid]._players[player] = token
-    return "done", 200
+        if player not in games[uuid].get_available_players():
+            return f"Player {player} its already being used", 400
+
+        games[uuid]._players[player] = token
+        return "done", 200
+
+    elif request.method == GET:
+        if validate_params(rjson, [TOKEN]) is False:
+            return "expected token", 404
+
+        token = rjson[TOKEN]
+
+        if users.get(token) is None:
+            return "not valid token", 401
+
+        for player,tk in this_game._players.items():
+            if tk == token:
+                return jsonify({"player": player})
+        return "not found", 404
+
+
+    return f"{request.method} not implemented", 405
 
 
 def validate_user(user, token):
