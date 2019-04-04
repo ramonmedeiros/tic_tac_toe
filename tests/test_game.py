@@ -12,13 +12,13 @@ X_TOKEN = "X-token"
 class TestGame(TestCase):
     def setUp(self):
         self.game = Game()
-        assert(self.game.get_available_players() == ["X", "O"])
+        assert(self.game.get_players() == [])
 
         self.game._players[X] = X_TOKEN
-        assert(self.game.get_available_players() == ["O"])
+        assert(self.game.get_players() == [X])
 
         self.game._players[O] = O_TOKEN
-        assert(self.game.get_available_players() == [])
+        assert(self.game.get_players() == [X, O])
 
     def test_board_size_three(self):
         expected = [None, None, None]

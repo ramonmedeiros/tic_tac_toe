@@ -72,6 +72,13 @@ def game():
     global games
 
     if request.method == POST:
+        if TOKEN not in request.json:
+            return "expected token", 404
+
+        token = request.json[TOKEN]
+        if users.get(token) == None:
+            return "invalid token", 404
+
         game = Game()
         game_uuid = uuid4().__str__()
         games[game_uuid] = game
@@ -108,7 +115,7 @@ def deal_with_game(uuid: str):
         return jsonify({
             "board": this_game.get_board(),
             "winner": this_game.get_winner(),
-            "available_players": this_game.get_available_players()
+            "players": this_game.get_players()
         })
 
     elif request.method == DELETE:
@@ -139,17 +146,18 @@ def register_player(uuid: str):
         if users.get(token) is None:
             return "not valid token", 401
 
-        if player not in games[uuid].get_available_players():
+        if player in games[uuid].get_players():
             return f"Player {player} its already being used", 400
 
         games[uuid]._players[player] = token
         return "done", 200
 
     elif request.method == GET:
-        if validate_params(rjson, [TOKEN]) is False:
+        params = request.args.to_dict()
+        if TOKEN not in params:
             return "expected token", 404
 
-        token = rjson[TOKEN]
+        token = params[TOKEN]
 
         if users.get(token) is None:
             return "not valid token", 401

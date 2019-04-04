@@ -17,14 +17,20 @@ class TestRest(TestCase):
         self.app = app.app.test_client()
 
     def setUp(self):
-        # create game
-        rv = self.app.post('/game', json={})
-        assert (rv.status_code == 201)
-        self.uuid = rv.data.decode()
-
+        
         # login players
         self.x_token = self.app.post(f'/login', json={USERNAME: X_USERNAME}).get_json()["token"]
         self.o_token = self.app.post(f'/login', json={USERNAME: O_USERNAME}).get_json()["token"]
+
+        # create game
+        rv = self.app.post('/game', json={TOKEN: self.x_token})
+        assert (rv.status_code == 201)
+        self.uuid = rv.data.decode()
+
+        # validate token
+        assert(self.app.post('/validate_token', json={TOKEN: self.x_token}).status_code == 200)
+
+        assert(self.app.get(f'/game/{self.uuid}/player', json={TOKEN: self.x_token}).status_code == 404)
 
         # register
         assert(self.app.post(f'/game/{self.uuid}/player', json={PLAYER: X, TOKEN: self.x_token}).status_code == 200)
@@ -40,7 +46,7 @@ class TestRest(TestCase):
         assert (rv.data.decode() == app.TITLE)
 
     def test_get_player_by_token(self):
-        assert(self.app.get(f'/game/{self.uuid}/player', json={TOKEN: self.x_token}).get_json()[PLAYER] == X)
+        assert(self.app.get(f'/game/{self.uuid}/player?token={self.x_token}').get_json()[PLAYER] == X)
 
     def test_get_new_game(self):
         rv = self.app.get('/game/' + self.uuid)
@@ -50,7 +56,7 @@ class TestRest(TestCase):
         assert (self.app.get('/game/not-exists').status_code == 404)
 
     def test_available_players(self):
-        assert (self.app.get(f'/game/{self.uuid}').get_json()["available_players"] == [])
+        assert (self.app.get(f'/game/{self.uuid}').get_json()["players"] == [X, O])
 
     def test_do_move(self):
         move = self.app.post(f'/game/{self.uuid}',

@@ -6,19 +6,20 @@
 {% block content %}
 <button id="back" type="button" onclick="window.location.replace(window.location.origin)">Back</button><br><br>
 <h2>Choose your side:</h2>
-  <input type="radio" name="player" id='x' checked> Player X
-  <input type="radio" name="player" id='o'> Player O
-  <input type="radio" name="player" id='visitor'> Watching<br><br>
+  <input type="radio" name="player" id='X' onchange="registerPlayer(this.id);"> Player X
+  <input type="radio" name="player" id='O' onchange="registerPlayer(this.id);"> Player O
+  <input type="radio" name="player" id='visitor' onchange="registerPlayer(this.id);"> Watching<br><br>
 
-
-<input id="p00" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
-<input id="p01" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
-<input id="p02" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" ><br>
-<input id="p10" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
-<input id="p11" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
-<input id="p12" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" ><br>
-<input id="p20" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
-<input id="p21" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
-<input id="p22" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" ><br>
-<script>fillBoard(); var main_interval =window.setInterval(fillBoard, 2000); </script>
+<div id="board" hidden>
+<input id="p00" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
+<input id="p01" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
+<input id="p02" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" ><br>
+<input id="p10" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
+<input id="p11" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
+<input id="p12" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" ><br>
+<input id="p20" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
+<input id="p21" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" >
+<input id="p22" name="board" type="button" value=" - " onclick="doMove(this.id);"  style="height:70px;width:70px;font-size:44pt;" ><br>
+</div>
+<script>isItRegistered();</script>
 {% endblock %}

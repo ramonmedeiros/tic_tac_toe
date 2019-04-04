@@ -1,18 +1,34 @@
-var BACKEND_LOGIN = "http://localhost:5000/login"
-var BACKEND_GAME_URL = "http://localhost:5000/game"
-var BACKEND_LOGOUT = "http://localhost:5000/logout"
+var BACKEND = "http://localhost:5000/"
+var BACKEND_LOGIN = BACKEND + "login"
+var BACKEND_GAME_URL = BACKEND + "game"
+var BACKEND_LOGOUT = BACKEND + "logout"
+
+
+function getToken() {
+    var auth = localStorage.getItem("tic_tac_auth");
+    if (auth != null) {
+        return JSON.parse(auth)["token"];
+    }
+    return null;
+}
+
 
 function startNewGame() {
+    
+    var token = getToken();
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 201) {
         uuid = this.responseText;
         location.pathname = "game/" + uuid
-        }
+    } else {
+        setTimeout('document.getElementById("error").textContent = ""', 5000);
+        document.getElementById("error").textContent = "Invalid token. Please log in";
+    }
     };
     xhttp.open("POST", BACKEND_GAME_URL, true);
     xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
-    xhttp.send();
+    xhttp.send(JSON.stringify({"token": token}));
 }
 
 function listGames() {
@@ -38,6 +54,7 @@ function listGames() {
         }
     };
     xhttp.open("GET", BACKEND_GAME_URL, true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
     xhttp.send();
 
 }
@@ -54,6 +71,7 @@ function isFinished(uuid){
             
     }};
     xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid, true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
     xhttp.send();
 }
 
@@ -75,7 +93,7 @@ function doMove(id) {
     var button_move = document.getElementById(id)
 
     // catch moves
-    move.player = getSelection().id.toUpperCase();
+    move.token = getToken();
     move.line = parseInt(id[1]);
     move.column = parseInt(id[2]);
 
@@ -119,6 +137,7 @@ function fillBoard() {
         }
     }};
     xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid, true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
     xhttp.send();
 }
 
@@ -128,10 +147,8 @@ function setWinner(player) {
         inputs[index].disabled = true;
     }
 
-    flash = document.getElementById("flash");
-    h1 = document.createElement("h1");
-    h1.textContent = "Player " + player + " won the game"
-    flash.appendChild(h1);
+    flash = document.getElementById("error");
+    flash.textContent = "Player " + player + " won the game"
 
     // set winner message
     window.clearInterval(main_interval);
@@ -151,11 +168,21 @@ function login(user) {
 }
 
 function logout() {
+    token = getToken();
+
+    if (token == null) {
+        localStorage.removeItem("tic_tac_auth");
+        window.location.reload();
+        return null;
+    }
+
     user = JSON.parse(localStorage.getItem("tic_tac_auth"))["user"]
-    token = JSON.parse(localStorage.getItem("tic_tac_auth"))["token"]
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
+        localStorage.removeItem("tic_tac_auth");
+        window.location.reload();
+    } else {
         localStorage.removeItem("tic_tac_auth");
         window.location.reload();
     }};
@@ -177,3 +204,91 @@ function loginBallon() {
         document.getElementById("link").href = "javascript:logout()";
     }
 }
+
+
+function setVisitor() {
+    onlyOneRadio("visitor");
+    enableBoard();
+
+    board = document.getElementsByName("board");
+    for (i = 0; i< board.length; i++) {
+        board[i].disabled = true;
+    }
+}
+ 
+
+function enableBoard() {
+    document.getElementById("board").hidden = false;
+    fillBoard();
+    var main_interval = window.setInterval(fillBoard, 2000);
+}
+
+
+function onlyOneRadio(id) {
+    radios = document.getElementsByName("player");
+
+    for (i = 0; i< radios.length; i++) {
+        if (radios[i].id == id) {
+            radios[i].checked = true;
+        } 
+        radios[i].disabled = true;
+    }
+}
+
+function isItRegistered() {
+    // get token
+    if (localStorage.getItem("tic_tac_auth") == null) {
+        setVisitor();    
+    }
+
+    // get uuid and token
+    var uuid = location.pathname.split("/").pop();
+    token = JSON.parse(localStorage.getItem("tic_tac_auth"))["token"];
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        player = JSON.parse(this.responseText)["player"];
+        onlyOneRadio(player);
+        enableBoard();
+    } else{
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            response = JSON.parse(this.responseText);
+            available_players = response["players"];
+            for (i = 0; i<available_players.length; i++){
+                document.getElementById(available_players[i]).disabled = true;
+            }
+        }};
+        xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid, true);
+        xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+        xhttp.send();
+   
+    }};
+    xhttp.open("GET", BACKEND_GAME_URL + "/" + uuid + "/player?token=" + token , true);
+    xhttp.send();
+
+}
+
+function registerPlayer(id) {
+    if (id == "visitor") {
+        setVisitor();
+        return null;
+    }
+
+    var uuid = location.pathname.split("/").pop();
+    token = JSON.parse(localStorage.getItem("tic_tac_auth"))["token"];
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        onlyOneRadio(id);
+        enableBoard();
+    }     
+    };
+    xhttp.open("POST", BACKEND_GAME_URL + "/" + uuid + "/player" , true);
+    xhttp.setRequestHeader('Content-type','application/json; charset=utf-8');
+    xhttp.send(JSON.stringify({"token": token, "player": id}));
+}
+

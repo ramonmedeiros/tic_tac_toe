@@ -44,8 +44,8 @@ class Game:
     def get_winner(self):
         return self._winner
 
-    def get_available_players(self):
-        return [player for player,token in self._players.items() if token is None]
+    def get_players(self):
+        return [player for player,token in self._players.items() if token is not None]
 
     def _get_player_by_token(self, token):
         for player,tk in self._players.items():
