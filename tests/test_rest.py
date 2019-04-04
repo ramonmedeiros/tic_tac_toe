@@ -27,9 +27,6 @@ class TestRest(TestCase):
         assert (rv.status_code == 201)
         self.uuid = rv.data.decode()
 
-        # validate token
-        assert(self.app.post('/validate_token', json={TOKEN: self.x_token}).status_code == 200)
-
         assert(self.app.get(f'/game/{self.uuid}/player', json={TOKEN: self.x_token}).status_code == 404)
 
         # register
