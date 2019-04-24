@@ -1,13 +1,13 @@
 TAG=tic_tac:local-container
 
 test:
-	pytest tests -v 
+	pytest backend/tests -v 
 
 format-files:
-	yapf -i -r tests tic_tac_toe
+	yapf -i -r backend
 
 run:
-	PYTHONPATH=. FLASK_APP=tic_tac_toe/app.py FLASK_ENV=development flask run
+	PYTHONPATH=. FLASK_APP=backend/tic_tac_toe/app.py FLASK_ENV=development flask run
 
 container:
 	docker stop backend || true
