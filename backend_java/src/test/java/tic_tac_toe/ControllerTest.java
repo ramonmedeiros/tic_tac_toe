@@ -1,4 +1,4 @@
-package hello;
+package tic_tac_toe;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -16,9 +16,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=hello.Application.class)
+@SpringBootTest(classes=tic_tac_toe.Application.class)
 @AutoConfigureMockMvc
-public class HelloControllerTest {
+public class ControllerTest {
 
     @Autowired
     private MockMvc mvc;
