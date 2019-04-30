@@ -4,11 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import tic_tac_toe.Game;
+import tic_tac_toe.FinishException;
 
 public class GameTest {
 	final String O_TOKEN = "O-token";
@@ -20,11 +23,10 @@ public class GameTest {
 		this.game = new Game();
 		assertEquals(0, this.game.getPlayers().size());
 
-		this.game.players.replace(this.game.X, X_TOKEN);
-		System.out.println(this.game.players);
+		this.game.players.replace(this.game.X, X_TOKEN);;
 		assertTrue(this.game.getPlayers().containsAll(List.of(this.game.X)));
 
-		this.game.players.replace(this.game.O, O_TOKEN);
+		this.game.players.replace(this.game.O, O_TOKEN);;
 		assertTrue(this.game.getPlayers().containsAll(List.of(this.game.X, this.game.O)));
 	}
 
@@ -33,67 +35,80 @@ public class GameTest {
 		assert this.game.getBoard().length == 3;
 	}
 
+	@Test
+	public void testBoardMove() {	
+		this.game.doMove("0", "0", X_TOKEN);; 
+		assertEquals(this.game.getBoard()[0][0], this.game.X);
+	}
+	
+	@Test
+	public void testRandomBoardMove() {
+		int line =  new Random().nextInt(2);
+		int column = new Random().nextInt(2);
+		this.game.doMove(Integer.toString(line), Integer.toString(column), O_TOKEN);;
+		
+		assertEquals(this.game.getBoard()[line][column], this.game.O);
+	}
+	
+	@Test(expected = FinishException.class)
+	public void testFinishLine() {
+		this.game.doMove("0", "0", O_TOKEN);;
+		this.game.doMove("2", "2", X_TOKEN);; 
+		this.game.doMove("0", "1", O_TOKEN);;
+		this.game.doMove("1", "1", X_TOKEN);;	 
+		this.game.doMove("0", "2", O_TOKEN);;
+	}
+
+	@Test(expected = FinishException.class)
+	public void testFinishColumn() {
+		this.game.doMove("0", "0", O_TOKEN);;
+		this.game.doMove("2", "2", X_TOKEN);; 
+		this.game.doMove("1", "0", O_TOKEN);;
+		this.game.doMove("1", "1", X_TOKEN);; 
+		this.game.doMove("2", "0", O_TOKEN);;
+	}
+
+	@Test(expected = FinishException.class)
+	public void testFinishLeftDiagonal() {
+		this.game.doMove("0", "0", O_TOKEN);;	
+		this.game.doMove("0", "2", X_TOKEN);;
+		this.game.doMove("1", "1", O_TOKEN);;
+		this.game.doMove("2", "1", X_TOKEN);;
+		this.game.doMove("2", "2", O_TOKEN);;
+	}
+	
+	@Test(expected = FinishException.class)
+	public void testFinishRightDiagonal() {
+		this.game.doMove("0", "2", O_TOKEN);
+		this.game.doMove("2", "2", X_TOKEN);
+		this.game.doMove("1", "1", O_TOKEN);
+		this.game.doMove("2", "1", X_TOKEN);
+		this.game.doMove("2", "0", O_TOKEN);
+	}
+	
+	@Test(expected = GameErrorException.class)
+	public void testUseInvalidPlayer() {
+		 this.game.doMove("0", "0", "invalid-token");
+	}
+
+	@Test(expected = GameErrorException.class)
+	public void testMoveAfterFinishGame() {
+		this.game.doMove("0", "0", O_TOKEN);
+		this.game.doMove("2", "2", X_TOKEN);
+		this.game.doMove("1", "0", O_TOKEN);
+		this.game.doMove("2", "1", X_TOKEN);
+		try {
+			this.game.doMove("2", "0", O_TOKEN);
+		} catch (FinishException e) {
+		
+		}
+		this.game.doMove("1", "1", O_TOKEN);
+	}
+	
+	@Test(expected = GameErrorException.class)
+	public void testTryDoTwoMovesSamePlayer() {
+		this.game.doMove("0", "0", O_TOKEN);
+		this.game.doMove("1", "0", O_TOKEN);
+	}
 }
 
-/***
- * import random
- * 
- * from unittest import TestCase from tic_tac_toe.game import Game,
- * GameException, GameFinished, O, X from tic_tac_toe import log
- * 
- * log.set_verbosity(log.DEBUG)
- * 
- * O_TOKEN = "O-token" X_TOKEN = "X-token"
- * 
- * class TestGame(TestCase): def setUp(self): self.game = Game()
- * assert(self.game.get_players() == [])
- * 
- * self.game._players[X] = X_TOKEN assert(self.game.get_players() == [X])
- * 
- * self.game._players[O] = O_TOKEN assert(self.game.get_players() == [X, O])
- * 
- * def test_board_size_three(self): expected = [None, None, None] assert
- * (self.game.get_board().count(expected) == 3)
- * 
- * def test_board_move(self): self.game.do_move(0, 0, X_TOKEN) assert
- * (self.game.get_board()[0][0] == X)
- * 
- * def test_random_board_move(self): line = random.randint(0, 2) column =
- * random.randint(0, 2) self.game.do_move(line, column, O_TOKEN) assert
- * (self.game.get_board()[line][column] == O)
- * 
- * def test_finish_line(self): self.game.do_move(0, 0, O_TOKEN)
- * self.game.do_move(2, 2, X_TOKEN) self.game.do_move(0, 1, O_TOKEN)
- * self.game.do_move(1, 1, X_TOKEN) with self.assertRaises(GameFinished):
- * self.game.do_move(0, 2, O_TOKEN)
- * 
- * def test_finish_column(self): self.game.do_move(0, 0, O_TOKEN)
- * self.game.do_move(2, 2, X_TOKEN) self.game.do_move(1, 0, O_TOKEN)
- * self.game.do_move(1, 1, X_TOKEN) with self.assertRaises(GameFinished):
- * self.game.do_move(2, 0, O_TOKEN)
- * 
- * def test_finish_left_diagonal(self): self.game.do_move(0, 0, O_TOKEN)
- * self.game.do_move(0, 2, X_TOKEN) self.game.do_move(1, 1, O_TOKEN)
- * self.game.do_move(2, 1, X_TOKEN) with self.assertRaises(GameFinished):
- * self.game.do_move(2, 2, O_TOKEN)
- * 
- * def test_finish_right_diagonal(self): self.game.do_move(0, 2, O_TOKEN)
- * self.game.do_move(2, 2, X_TOKEN) self.game.do_move(1, 1, O_TOKEN)
- * self.game.do_move(2, 1, X_TOKEN) with self.assertRaises(GameFinished):
- * self.game.do_move(2, 0, O_TOKEN)
- * 
- * def test_use_invalid_player(self): with self.assertRaises(GameException):
- * self.game.do_move(0, 0, 2)
- * 
- * def test_move_after_finish_game(self): self.game.do_move(0, 0, O_TOKEN)
- * self.game.do_move(2, 2, X_TOKEN) self.game.do_move(1, 0, O_TOKEN)
- * self.game.do_move(2, 1, X_TOKEN) with self.assertRaises(GameFinished):
- * self.game.do_move(2, 0, O_TOKEN)
- * 
- * with self.assertRaises(GameException): self.game.do_move(1, 1, O_TOKEN)
- * 
- * def test_try_do_two_moves_same_player(self): self.game.do_move(0, 0, O_TOKEN)
- * with self.assertRaises(GameException): self.game.do_move(1, 0, O_TOKEN)
- * 
- * 
- ***/
