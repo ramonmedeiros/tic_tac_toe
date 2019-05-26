@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ramonmedeiros/tic_tac_toe.svg?branch=master)](https://travis-ci.org/ramonmedeiros/tic_tac_toe/)
+
 # Ramon's tic tac toe
 
 ## How to run
