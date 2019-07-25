@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/ramonmedeiros/tic_tac_toe.svg?branch=master)](https://travis-ci.org/ramonmedeiros/tic_tac_toe/)
+[![Coverage](https://codecov.io/gh/ramonmedeiros/tic_tac_toe/branch/master/graph/badge.svg)](https://codecov.io/gh/ramonmedeiros/tic_tac_toe)
+
 
 # Ramon's tic tac toe
 
