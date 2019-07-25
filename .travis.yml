@@ -6,3 +6,5 @@ install:
 script:
 - make test
 
+after_success:
+  - codecov

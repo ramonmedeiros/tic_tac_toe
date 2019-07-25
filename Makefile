@@ -1,7 +1,7 @@
 TAG=tic_tac:local-container
 
 test:
-	pytest backend/tests -v 
+	pytest --cov=./backend/tic_tac_toe/ backend/tests -v 
 
 format-files:
 	yapf -i -r backend
