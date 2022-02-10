@@ -1,0 +1,23 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/backend"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: ipython
+    versions:
+    - 7.19.0
+    - 7.20.0
+    - 7.21.0
+  - dependency-name: urllib3
+    versions:
+    - 1.26.3
+  - dependency-name: coverage
+    versions:
+    - "5.4"
+  - dependency-name: yapf
+    versions:
+    - 0.30.0
