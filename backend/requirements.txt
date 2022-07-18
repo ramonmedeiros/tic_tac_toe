@@ -4,7 +4,7 @@ backcall==0.1.0
 certifi==2019.11.28
 chardet==3.0.4
 Click==7.0
-codecov==2.0.15
+codecov==2.1.12
 coverage==4.5.3
 decorator==4.4.2
 Flask==1.0.2
