@@ -25,7 +25,7 @@ prompt-toolkit==1.0.15
 ptyprocess==0.6.0
 py==1.10.0
 Pygments==2.11.2
-pytest==4.3.0
+pytest==7.2.1
 pytest-cov==2.7.1
 requests==2.23.0
 simplegeneric==0.8.1
